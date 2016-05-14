@@ -1,0 +1,32 @@
+---
+title: "Use of correctCounts for assigning multiply-mapped-reads"
+author: "Douglas Wu"
+date: "May 14, 2016"
+output: html_document
+---
+
+This package contains only one function *correctCounts* as to assign multiply-mapped-reads to the most abundant gene that it mapped to.
+
+```{r warning=F}
+library(correctMultiCount)
+
+data(baseCount)
+data(multiCount)
+
+head(baseCount)
+head(multiCount)
+```
+
+Noted that this function needed to two data frames with the exact column names as shown here.
+
+* baseCount dataframe needed to have 2 columns named as 
+  1. id 
+  2. count
+* multiCount dataframe needed to have 2 columns named as
+  1. fragment_id         
+  2. gene_id
+
+``` {r}
+df = correctCounts(baseCount,multiCount)
+head(df)
+```

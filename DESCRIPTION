@@ -1,0 +1,14 @@
+Package: correctMultiCount
+Type: Package
+Title: Correcting multiply mapped counts
+Version: 0.1.0
+Author: Douglas Wu
+Maintainer: Douglas Wu <wckdouglas@gmail.com>
+Description: This package aims to assign multiply mapped fragments from RNA-seq experiments
+              to the most-abundantly-mapped gene. This require input of two files:
+                1. base count file, which stores gene-id and gene-counts from uniquely-mapped-fragments
+                2. multiply mapped read files, which store the fragment id, and the gene id that it mapped to
+License: GPL-2
+LazyData: TRUE
+LinkingTo: Rcpp
+RoxygenNote: 5.0.1
