@@ -2,5 +2,6 @@
 
 installation:
 
-	devtools::install_github('wckdouglas/correctMultiCount')
-
+```
+devtools::install_github('wckdouglas/correctMultiCount')
+```
