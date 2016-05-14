@@ -8,47 +8,34 @@ using a base count file (consist of columns: id, count) and a multiply-mapped fr
 
 }
 \usage{
-correctCounts(baseCount, multiCoun)
+correctCounts(baseCount, multiCount)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{correctCounts}{
-%%     ~~Describe \code{x} here~~
+  \item{baseCount}{
+    basecount should be a dataframe for storing gene count from uniquely-mapped reads
+    Have to contain columns named as 'id' for gene_id
+      and 'count' for counts
+  }
+  \item{multiCount}{
+    multiCount should be a dataframe for storing multiply-mapped reads and their mapped locus.
+    columns named as 'fragment_id' for storing read id
+      and 'gene_id' for storing gene_id
+  }
 }
-}
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{baseCount}{Description of 'comp1'}
-%%  \item{multiCount}{Description of 'comp2'}
-%% ...
-}
+
 \author{
 Douglas wu
 }
-\note{
-%%  ~~further notes~~
-}
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
+
+library(correctMultiCount)
+
+data(baseCount)
+data(multiCount)
 
 ## The function is currently defined as
-function (x)
-{
-  }
+df = correctCounts(baseCount,multiCount)
+head(df)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
