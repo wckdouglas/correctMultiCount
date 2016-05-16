@@ -27,6 +27,41 @@ Noted that this function needed to two data frames with the exact column names a
   2. gene_id
 
 ``` {r}
-df = correctCounts(baseCount,multiCount)
+df <- correctCounts(baseCount,multiCount)
 head(df)
 ```
+
+
+Now, lets check if it works as we thought.
+```{r warning=F, message=F}
+library(dplyr)
+compareDF <- df %>% 
+  setNames(c('id','newCount')) %>%
+  inner_join(baseCount) %>%   # merge the old and new count dataframe
+  tbl_df
+```
+
+And find out the fragments that mapped to at least two locus
+
+```{r}
+multiCount %>% 
+  group_by(fragment_id) %>% 
+  summarize(mapped_location_count = n()) %>% 
+  filter(mapped_location_count > 1) %>%
+  arrange(-mapped_location_count) %>%
+  tbl_df
+```
+
+Lets check the third fragment
+```{r}
+fragment = multiCount %>%
+  filter(fragment_id=='NS500358:89:HJWK2BGXX:1:11101:22227:18777') %>%
+  tbl_df
+head(fragment)
+
+fragment_mapped_gene <- fragment$gene_id
+compareDF %>%
+  filter(id %in% fragment_mapped_gene)
+```
+
+So here you see, the multiply-mapped gene is assign to the only gene locus that originally has count.
