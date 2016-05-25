@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 #include <Rcpp.h>
+#include <math.h>
 
 using namespace std;
 using namespace Rcpp;
@@ -61,6 +62,7 @@ countDict updateCounts(countDict geneCountDict, multiCountDict multiCountsID)
 	intlist::iterator maxIter;
 	string addingGeneID;
 	int position;
+	int i = 0;
 	for( const auto& record : multiCountsID )
 	{
 		gene_ids = record.second;
@@ -69,6 +71,7 @@ countDict updateCounts(countDict geneCountDict, multiCountDict multiCountsID)
 		maxIter = max_element(countList.begin(), countList.end());
 		position = distance(countList.begin(), maxIter);
 		addingGeneID = gene_ids[position];
+	//	cout << addingGeneID << '\n';
 		if (geneCountDict.find(addingGeneID) == geneCountDict.end())
 		{
 			geneCountDict[addingGeneID] = 1;
@@ -76,6 +79,11 @@ countDict updateCounts(countDict geneCountDict, multiCountDict multiCountsID)
 		else
 		{
 			geneCountDict[addingGeneID] ++;
+		}
+		i ++;
+		if (remainder(i,1000) == 0)
+		{
+			cout << "Assigned " << i << " multi-mapped fragments" << '\n';
 		}
 	}
 	return geneCountDict;
@@ -131,6 +139,7 @@ DataFrame correctCounts(DataFrame baseCount, DataFrame multiCount)
 	  count = counts[i];
 	  geneCountDict[id] = count;
 	}
+	cout << "Read gene count table with "<< geneCountDict.size() << " genes" << '\n';
 
 	//----------------------------------------------------------------------------//
 	// read multiple counts
@@ -145,6 +154,7 @@ DataFrame correctCounts(DataFrame baseCount, DataFrame multiCount)
 		fragment_ID = fragment_ids[i];
 		multiCountsID[fragment_ID].push_back(geneID);
 	}
+	cout << "Parsed " << multiCountsID.size() << " multi-mapped fragments" << '\n';
 
 	// -----------------------------------------------------------------------------//
 	// update count dict by getting the maximum-counted-gene
