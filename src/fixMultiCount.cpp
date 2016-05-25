@@ -81,7 +81,7 @@ countDict updateCounts(countDict geneCountDict, multiCountDict multiCountsID)
 			geneCountDict[addingGeneID] ++;
 		}
 		i ++;
-		if (remainder(i,1000) == 0)
+		if (remainder(i,10000) == 0)
 		{
 			cout << "Assigned " << i << " multi-mapped fragments" << '\n';
 		}
