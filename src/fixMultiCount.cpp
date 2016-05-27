@@ -4,20 +4,21 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <Rcpp.h>
 #include <math.h>
 
 using namespace std;
 using namespace Rcpp;
-typedef unordered_map<string, int> countDict;
-typedef unordered_map<string, vector<string> > multiCountDict;
+typedef map<string, int> countDict;
 typedef vector<string> stringlist;
+typedef unordered_map<string, stringlist> multiCountDict;
 typedef vector<int> intlist;
 
 intlist getCounts(stringlist gene_ids, countDict geneCountDict)
 {
 	// given a list of gene ids return the counts of these genes
-	// base on the given count dict
+	// base on the given count dict (geneCountDict)
 	string geneID;
 	intlist countList(gene_ids.size());
 	for (int i = 0; i < gene_ids.size(); i++)
@@ -54,24 +55,25 @@ DataFrame constructResult(countDict geneCountDict)
 }
 
 
-countDict updateCounts(countDict geneCountDict, multiCountDict multiCountsID)
-// getting the list of genes that a single fragment mapped to
-// and select the highest-count gene as assignment
+countDict updateCounts(countDict &geneCountDict, multiCountDict multiCountsID)
 {
+  // getting the list of genes that a single fragment mapped to
+  // and select the highest-count gene as assignment
 	stringlist gene_ids;
 	intlist::iterator maxIter;
 	string addingGeneID;
+	string fragmentID;
 	int position;
 	int i = 0;
 	for( const auto& record : multiCountsID )
 	{
 		gene_ids = record.second;
+	  fragmentID = record.first;
 		intlist countList(gene_ids.size());
  		countList = getCounts(gene_ids, geneCountDict);
 		maxIter = max_element(countList.begin(), countList.end());
 		position = distance(countList.begin(), maxIter);
 		addingGeneID = gene_ids[position];
-	//	cout << addingGeneID << '\n';
 		if (geneCountDict.find(addingGeneID) == geneCountDict.end())
 		{
 			geneCountDict[addingGeneID] = 1;
@@ -91,6 +93,7 @@ countDict updateCounts(countDict geneCountDict, multiCountDict multiCountsID)
 
 int columnExist(stringlist neededName, stringlist existingNames, string dfname)
 {
+  // check if columns existed in the input data frame
   string colname;
   string errorMessage;
   for (int i=0;i<neededName.size();i++)
@@ -110,8 +113,10 @@ int columnExist(stringlist neededName, stringlist existingNames, string dfname)
 //' @exportPattern "^[[:alpha:]]+"
 //' @title correctCounts
 //' @description Assigning multiply-mapped reads to most-abundantly-mapped locus
-//' @param basecount: should be a dataframe for storing gene count from uniquely-mapped reads **Have to contain columns named as 'id' for gene_id and 'count' for counts
-//' @param   multiCount should be a dataframe for storing multiply-mapped reads and their mapped locus. Columns named as 'fragment_id' for storing read id  and 'gene_id' for storing gene_id
+//' @param basecount: should be a dataframe for storing gene count from uniquely-mapped reads
+//'                   **Columns named as 'id' for gene_id and 'count' for counts
+//' @param multiCount should be a dataframe for storing multiply-mapped reads and their mapped locus.
+//'                 **Columns named as 'fragment_id' for storing read id  and 'gene_id' for storing gene_id
 //' @export
 // [[Rcpp::export]]
 DataFrame correctCounts(DataFrame baseCount, DataFrame multiCount)
@@ -158,12 +163,13 @@ DataFrame correctCounts(DataFrame baseCount, DataFrame multiCount)
 
 	// -----------------------------------------------------------------------------//
 	// update count dict by getting the maximum-counted-gene
-	geneCountDict = updateCounts(geneCountDict, multiCountsID);
-
+	updateCounts(geneCountDict, multiCountsID);
 	// -----------------------------------------------------------------------------//
 	//
 	// Create new count table
 	DataFrame newDF = constructResult(geneCountDict);
+  geneCountDict.clear();
+  multiCountsID.clear();
 	return newDF;
 }
 

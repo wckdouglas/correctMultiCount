@@ -7,9 +7,11 @@
 correctCounts(baseCount, multiCount)
 }
 \arguments{
-\item{multiCount}{should be a dataframe for storing multiply-mapped reads and their mapped locus. Columns named as 'fragment_id' for storing read id  and 'gene_id' for storing gene_id}
+\item{multiCount}{should be a dataframe for storing multiply-mapped reads and their mapped locus.
+**Columns named as 'fragment_id' for storing read id  and 'gene_id' for storing gene_id}
 
-\item{basecount:}{should be a dataframe for storing gene count from uniquely-mapped reads **Have to contain columns named as 'id' for gene_id and 'count' for counts}
+\item{basecount:}{should be a dataframe for storing gene count from uniquely-mapped reads
+**Columns named as 'id' for gene_id and 'count' for counts}
 }
 \description{
 Assigning multiply-mapped reads to most-abundantly-mapped locus
