@@ -20,8 +20,9 @@ intlist getCounts(stringlist gene_ids, countDict geneCountDict)
 	// given a list of gene ids return the counts of these genes
 	// base on the given count dict (geneCountDict)
 	string geneID;
-	intlist countList(gene_ids.size());
-	for (int i = 0; i < gene_ids.size(); i++)
+  int vector_size = gene_ids.size();
+	intlist countList(vector_size);
+	for (int i = 0; i < vector_size; i++)
 	{
 		geneID = gene_ids[i];
 		if (geneCountDict.find(geneID) == geneCountDict.end())
